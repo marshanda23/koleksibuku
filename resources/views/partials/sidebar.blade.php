@@ -62,7 +62,18 @@
         <i class="mdi mdi-book-open-variant menu-icon"></i>
       </a>
     </li>
-
+  <li class="nav-item">
+  <a class="nav-link" href="{{ route('pdf.sertifikat') }}" target="_blank">
+    <span class="menu-title">Cetak Sertifikat</span>
+    <i class="mdi mdi-certificate menu-icon"></i>
+  </a>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="{{ route('pdf.undangan') }}" target="_blank">
+    <span class="menu-title">Cetak Undangan</span>
+    <i class="mdi mdi-file-document menu-icon"></i>
+  </a>
+</li>
     <li class="nav-item">
       <a class="nav-link" href="{{ route('logout') }}" 
           onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
