@@ -66,7 +66,7 @@
 
     <div class="isi-surat">
         <p>Yth. <strong>{{ $penerima }}</strong><br>
-        Universitas Airlangga<br>
+        Marshanda Hadi S<br>
         Surabaya</p>
 
         <p>Dengan hormat,</p>

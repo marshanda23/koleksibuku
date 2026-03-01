@@ -74,7 +74,7 @@ class LoginController extends Controller
         $request->validate(['otp' => 'required|string|max:6']);
         $user = Auth::user();
 
-        // Cek apakah user ada dan kode OTP cocok
+        
         if ($user && $request->otp === $user->otp) {
             $user->update(['otp' => null]);
             return redirect($this->redirectTo); 

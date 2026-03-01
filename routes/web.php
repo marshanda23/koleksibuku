@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\BukuController;
+use App\Http\Controllers\BarangController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\PdfController;
@@ -33,6 +34,12 @@ Route::middleware(['auth'])->group(function () {
     
     Route::resource('buku', BukuController::class);
     Route::post('/buku', [BukuController::class, 'store'])->name('buku.store');
+    Route::get('/barang', [BarangController::class, 'index'])->name('barang.index');
+    Route::post('/barang', [BarangController::class, 'store'])->name('barang.store');
+    Route::get('/barang/{id}/edit', [BarangController::class, 'edit'])->name('barang.edit');
+    Route::put('/barang/{id}', [BarangController::class, 'update'])->name('barang.update');
+    Route::delete('/barang/{id}', [BarangController::class, 'destroy'])->name('barang.destroy');
+    Route::post('/barang/cetak-tag', [BarangController::class, 'cetakTag'])->name('barang.cetak_tag');
     Route::get('/download-sertifikat', [PdfController::class, 'sertifikat'])->name('pdf.sertifikat');
     Route::get('/download-undangan', [PdfController::class, 'undangan'])->name('pdf.undangan');
 });

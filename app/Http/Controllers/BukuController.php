@@ -19,7 +19,7 @@ class BukuController extends Controller
     {
         $request->validate([
             'kategori_id' => 'required',
-            'kode'        => 'required|unique:bukus,kode', // VALIDASI KODE UNIK
+            'kode'        => 'required|unique:bukus,kode', 
             'judul'       => 'required',
             'pengarang'   => 'required',
         ], [
@@ -43,7 +43,7 @@ class BukuController extends Controller
     {
         $request->validate([
             'kategori_id' => 'required',
-            'kode'        => 'required|unique:bukus,kode,' . $id, // ABAIKAN KODE SENDIRI SAAT EDIT
+            'kode'        => 'required|unique:bukus,kode,' . $id, 
             'judul'       => 'required',
             'pengarang'   => 'required',
         ], [

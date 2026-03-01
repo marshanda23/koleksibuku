@@ -62,6 +62,14 @@
         <i class="mdi mdi-book-open-variant menu-icon"></i>
       </a>
     </li>
+
+    <li class="nav-item {{ Request::is('barang*') ? 'active' : '' }}">
+      <a class="nav-link" href="{{ url('/barang') }}">
+        <span class="menu-title">Data Barang</span>
+        <i class="mdi mdi-tag-multiple menu-icon"></i>
+      </a>
+    </li>
+
   <li class="nav-item">
   <a class="nav-link" href="{{ route('pdf.sertifikat') }}" target="_blank">
     <span class="menu-title">Cetak Sertifikat</span>
