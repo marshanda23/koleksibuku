@@ -4,30 +4,32 @@
     <meta charset="UTF-8">
     <title>Cetak Label TnJ 108</title>
     <style>
-        @page { margin: 5mm; }
+        @page {
+            size: portrait;
+           margin: 5mm 2mm; 
+        }
+        
         body { font-family: 'Helvetica', sans-serif; margin: 0; padding: 0; }
 
         table {
-            width: 100%;
             table-layout: fixed;
             border-collapse: separate;
-            border-spacing: 1mm;
-        }
+         border-spacing: 2mm 1mm; 
+        margin: 2mm;
+        margin-left: 0; 
+            margin-top: 0;
+            width: auto;
+    }
 
-        td.label-box {
-            width: 20%;
-            height: 18mm;
-            border: 0.5pt solid #ccc;
-            text-align: center;
-            vertical-align: middle;
-            padding: 0.5mm;
-            overflow: hidden;
-        }
-
-        td.label-blank {
-            width: 20%;
-            height: 18mm;
-            border: none;
+        td.label-box, td.label-blank {
+            width: 38mm;
+        height: 19mm;
+        border: 0.1pt solid #eee;
+        text-align: center;
+        vertical-align: middle;
+        padding: 1mm;
+        overflow: hidden;
+        box-sizing: border-box;
         }
 
         .nama {

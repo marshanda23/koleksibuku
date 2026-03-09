@@ -165,7 +165,7 @@
                 <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             </div>
             <div class="modal-body pt-2">
-                <form action="{{ route('barang.store') }}" method="POST">
+                <form id="formTambah" action="{{ route('barang.store') }}" method="POST"> 
                     @csrf
                     <div class="form-group mb-3">
                         <label class="font-weight-bold">Nama Barang</label>
@@ -182,9 +182,13 @@
                                style="border-radius: 8px;" required>
                     </div>
                     <div class="d-grid">
-                        <button type="submit" class="btn btn-gradient-primary btn-icon-text shadow-sm" style="border-radius: 8px;">
-                            <i class="mdi mdi-file-check btn-icon-prepend"></i> Simpan
-                        </button>
+                        <button type="button" id="btnSimpanBarang"
+                        class="btn btn-gradient-primary btn-icon-text shadow-sm"
+                        style="border-radius: 8px;">
+                    <span id="textSimpan">
+                        <i class="mdi mdi-file-check btn-icon-prepend"></i> Simpan
+                    </span>
+                </button>
                     </div>
                 </form>
             </div>

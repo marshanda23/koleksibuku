@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="{{ asset('assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css') }}">
 
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
     @stack('style')
 
     <link rel="shortcut icon" href="{{ asset('assets/images/favicon.png') }}" />

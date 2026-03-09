@@ -29,6 +29,18 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::post('/profile/update', [HomeController::class, 'updateProfile'])->name('profile.update');
     
+    Route::get('/barang-js', function () {
+        return view('barang_js');
+        })->name('barang.js');
+
+         Route::get('/barang-js-datatables', function () {
+        return view('barang_js_datatable');
+    })->name('barang.js.datatables');
+
+    Route::get('/select-kota', function () {
+    return view('select.index');
+})->name('select.index');
+        
     Route::resource('kategori' , KategoriController::class);
     Route::post('/kategori', [KategoriController::class, 'store'])->name('kategori.store');
     
