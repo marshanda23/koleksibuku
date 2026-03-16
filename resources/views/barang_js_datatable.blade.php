@@ -22,7 +22,7 @@
                     <div class="row mb-4 align-items-center">
                         <label class="col-sm-2 col-form-label fw-bold text-dark">Nama barang</label>
                         <div class="col-sm-10">
-                            {{-- Placeholder dikosongkan agar tidak ada tulisan 'required' --}}
+                           
                             <input type="text" id="namaBarang" class="form-control custom-input" placeholder="" required>
                         </div>
                     </div>

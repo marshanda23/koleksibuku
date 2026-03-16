@@ -128,6 +128,22 @@ DataTables
 </div>
 </li>
 
+<li class="nav-item">
+<a class="nav-link {{ request()->routeIs('pos.*') ? 'active' : '' }}"
+href="{{ route('pos.index') }}">
+<span class="menu-title">Point Of Sales</span>
+<i class="mdi mdi-cash-register menu-icon"></i>
+</a>
+</li>
+
+<li class="nav-item">
+<a class="nav-link {{ request()->routeIs('wilayah.*') ? 'active' : '' }}"
+href="{{ route('wilayah.index') }}">
+<span class="menu-title">Wilayah</span>
+<i class="mdi mdi-map-marker menu-icon"></i>
+</a>
+</li>
+
 {{-- SELECT KOTA --}}
 <li class="nav-item">
 <a class="nav-link {{ request()->routeIs('select.*') ? 'active' : '' }}"

@@ -3,21 +3,30 @@
 @section('content')
 
 <div class="page-header">
+
 <h3 class="page-title">
+
 <span class="page-title-icon bg-gradient-primary text-white me-2">
 <i class="mdi mdi-map-marker"></i>
 </span>
-<span class="text-muted" style="font-size:0.8rem;">Form /</span>
+
+<span class="text-muted" style="font-size:0.8rem;">
+Form /
+</span>
+
 Select Kota
+
 </h3>
+
 </div>
 
 
 <div class="row">
 
-{{-- CARD SELECT --}}
 <div class="col-md-6 grid-margin stretch-card">
+
 <div class="card shadow-sm border-0">
+
 <div class="card-header bg-white fw-bold text-primary">
 Select
 </div>
@@ -25,24 +34,52 @@ Select
 <div class="card-body p-4">
 
 <div class="mb-3">
-<label class="fw-bold">Kota</label>
-<input type="text" id="kotaInput1" class="form-control custom-input">
+
+<label class="fw-bold">
+Kota
+</label>
+
+<input type="text"
+id="kotaInput1"
+class="form-control custom-input">
+
 </div>
 
 <div class="text-end mb-4">
-<button class="btn btn-purple px-4" id="btnTambah1">Tambahkan</button>
+
+<button class="btn btn-purple px-4"
+id="btnTambah1">
+
+Tambahkan
+
+</button>
+
 </div>
 
 <div class="mb-3">
-<label class="fw-bold">Select Kota</label>
-<select id="selectKota1" class="form-control custom-input">
-<option value="">-- Pilih Kota --</option>
+
+<label class="fw-bold">
+Select Kota
+</label>
+
+<select id="selectKota1"
+class="form-control custom-input">
+
+<option value="">
+-- Pilih Kota --
+</option>
+
 </select>
+
 </div>
 
 <div class="mt-3">
+
 <b>Kota Terpilih :</b>
-<span id="hasilKota1" class="text-primary"></span>
+
+<span id="hasilKota1"
+class="text-primary"></span>
+
 </div>
 
 </div>
@@ -50,9 +87,10 @@ Select
 </div>
 
 
-{{-- CARD SELECT2 --}}
 <div class="col-md-6 grid-margin stretch-card">
+
 <div class="card shadow-sm border-0">
+
 <div class="card-header bg-white fw-bold text-primary">
 Select 2
 </div>
@@ -60,24 +98,52 @@ Select 2
 <div class="card-body p-4">
 
 <div class="mb-3">
-<label class="fw-bold">Kota</label>
-<input type="text" id="kotaInput2" class="form-control custom-input">
+
+<label class="fw-bold">
+Kota
+</label>
+
+<input type="text"
+id="kotaInput2"
+class="form-control custom-input">
+
 </div>
 
 <div class="text-end mb-4">
-<button class="btn btn-purple px-4" id="btnTambah2">Tambahkan</button>
+
+<button class="btn btn-purple px-4"
+id="btnTambah2">
+
+Tambahkan
+
+</button>
+
 </div>
 
 <div class="mb-3">
-<label class="fw-bold">Select Kota</label>
-<select id="selectKota2" class="form-control select2-purple">
-<option value="">-- Pilih Kota --</option>
+
+<label class="fw-bold">
+Select Kota
+</label>
+
+<select id="selectKota2"
+class="form-control select2-purple">
+
+<option value="">
+-- Pilih Kota --
+</option>
+
 </select>
+
 </div>
 
 <div class="mt-3">
+
 <b>Kota Terpilih :</b>
-<span id="hasilKota2" class="text-primary"></span>
+
+<span id="hasilKota2"
+class="text-primary"></span>
+
 </div>
 
 </div>
@@ -132,6 +198,7 @@ cursor:not-allowed;
 @push('script')
 
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <script>
@@ -141,9 +208,6 @@ $(document).ready(function(){
 $('#selectKota2').select2({
 width:'100%'
 });
-
-
-/* CARD SELECT */
 
 $('#btnTambah1').click(function(){
 
@@ -168,15 +232,12 @@ btn.removeClass('btn-loading').prop('disabled', false);
 
 });
 
-
 $('#selectKota1').change(function(){
 
 $('#hasilKota1').text($(this).val());
 
 });
 
-
-/* CARD SELECT2 */
 
 $('#btnTambah2').click(function(){
 
@@ -200,7 +261,6 @@ btn.removeClass('btn-loading').prop('disabled', false);
 },400);
 
 });
-
 
 $('#selectKota2').change(function(){
 

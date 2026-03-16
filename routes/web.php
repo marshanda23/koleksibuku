@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\BukuController;
 use App\Http\Controllers\BarangController;
+use App\Http\Controllers\POSController;
+use App\Http\Controllers\WilayahController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\PdfController;
@@ -51,6 +53,25 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/barang/{id}/edit', [BarangController::class, 'edit'])->name('barang.edit');
     Route::put('/barang/{id}', [BarangController::class, 'update'])->name('barang.update');
     Route::delete('/barang/{id}', [BarangController::class, 'destroy'])->name('barang.destroy');
+
+    Route::prefix('pos')->name('pos.')->group(function(){
+
+    Route::get('/', [POSController::class,'index'])->name('index');
+
+    Route::post('/cari-barang', [POSController::class,'cariBarang'])->name('cari');
+
+    Route::post('/bayar', [POSController::class,'bayar'])->name('bayar');
+
+});
+    Route::prefix('wilayah')->name('wilayah.')->group(function () {
+
+    Route::get('/', [WilayahController::class,'index'])->name('index');
+
+    Route::get('/kota/{provinsi}', [WilayahController::class,'getKota']);
+    Route::get('/kecamatan/{kota}', [WilayahController::class,'getKecamatan']);
+    Route::get('/kelurahan/{kecamatan}', [WilayahController::class,'getKelurahan']);
+
+    });
     Route::post('/barang/cetak-tag', [BarangController::class, 'cetakTag'])->name('barang.cetak_tag');
     Route::get('/download-sertifikat', [PdfController::class, 'sertifikat'])->name('pdf.sertifikat');
     Route::get('/download-undangan', [PdfController::class, 'undangan'])->name('pdf.undangan');

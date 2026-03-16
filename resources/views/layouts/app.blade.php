@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>Dashboard</title>
 
@@ -58,6 +59,7 @@
 <script src="{{ asset('assets/js/jquery.cookie.js') }}"></script>
 
 <script src="{{ asset('assets/js/dashboard.js') }}"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 @stack('script')
 
 </body>
