@@ -30,7 +30,7 @@ Transaksi Penjualan
 <input type="text"
 id="kode_barang"
 class="form-control border-primary"
-placeholder="Scan / Ketik kode barang">
+placeholder="Ketik kode barang">
 </div>
 
 <div class="col-md-12">

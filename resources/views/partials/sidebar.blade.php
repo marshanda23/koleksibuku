@@ -167,6 +167,36 @@ href="{{ route('select.index') }}">
 </a>
 </li>
 
+{{-- KANTIN --}}
+<li class="nav-item">
+    <a class="nav-link {{ request()->is('kantin*') ? 'active' : '' }}"
+       data-bs-toggle="collapse"
+       href="#kantinMenu">
+        <span class="menu-title">Kantin</span>
+        <i class="menu-arrow"></i>
+        <i class="mdi mdi-food menu-icon"></i>
+    </a>
+
+    <div class="collapse {{ request()->is('kantin*') ? 'show' : '' }}" id="kantinMenu">
+        <ul class="nav flex-column sub-menu">
+
+            <li class="nav-item">
+                <a class="nav-link {{ request()->is('kantin/order') ? 'active' : '' }}"
+                   href="{{ url('/kantin/order') }}">
+                    Order Customer
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link {{ request()->is('kantin/vendor*') ? 'active' : '' }}"
+                   href="{{ url('/kantin/vendor/login') }}">
+                    Vendor Login
+                </a>
+            </li>
+
+        </ul>
+    </div>
+</li>
 
 <li class="nav-item">
 <a class="nav-link"
