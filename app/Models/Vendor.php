@@ -2,13 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Model;
 
-class Vendor extends Authenticatable
+class Vendor extends Model
 {
     protected $table      = 'vendor';
     protected $primaryKey = 'idvendor';
-    public $timestamps    = false;
 
     protected $fillable = [
         'nama_vendor',
@@ -16,16 +15,14 @@ class Vendor extends Authenticatable
         'password',
     ];
 
-    protected $hidden = [
-        'password',
-    ];
+    protected $hidden = ['password'];
 
-    public function menu()
+    public function menus()
     {
         return $this->hasMany(Menu::class, 'idvendor', 'idvendor');
     }
 
-    public function pesanan()
+    public function pesanans()
     {
         return $this->hasMany(Pesanan::class, 'idvendor', 'idvendor');
     }

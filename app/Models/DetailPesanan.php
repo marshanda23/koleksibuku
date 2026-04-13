@@ -7,30 +7,24 @@ use Illuminate\Database\Eloquent\Model;
 class DetailPesanan extends Model
 {
     protected $table      = 'detail_pesanan';
-    protected $primaryKey = 'iddetail_pesanan';
-    public $timestamps    = false;
+    protected $primaryKey = 'iddetail';
 
     protected $fillable = [
-        'idmenu',
         'idpesanan',
+        'idmenu',
         'jumlah',
         'harga',
         'subtotal',
-        'catatan',
         'timestamp',
     ];
-
-    protected $casts = [
-        'timestamp' => 'datetime',
-    ];
-
-    public function menu()
-    {
-        return $this->belongsTo(Menu::class, 'idmenu', 'idmenu');
-    }
 
     public function pesanan()
     {
         return $this->belongsTo(Pesanan::class, 'idpesanan', 'idpesanan');
+    }
+
+    public function menu()
+    {
+        return $this->belongsTo(Menu::class, 'idmenu', 'idmenu');
     }
 }

@@ -13,16 +13,13 @@
 
 <div class="row">
 
-    {{-- KIRI: Pilih Vendor & Menu --}}
     <div class="col-md-8">
         <div class="card shadow-sm border-0" style="border-radius:12px">
             <div class="card-body">
 
                 <h4 class="text-primary mb-3">
                     <i class="mdi mdi-store me-2"></i>Pilih Menu
-                </h4>
-
-                {{-- POIN 2: Select vendor (berjenjang -> menu muncul setelah vendor dipilih) --}}
+                </h4>   
                 <div class="mb-4">
                     <label class="fw-bold">Pilih Vendor</label>
                     <select id="vendorSelect" class="form-control border-primary" onchange="loadMenu()">
@@ -44,7 +41,6 @@
         </div>
     </div>
 
-    {{-- KANAN: Keranjang --}}
     <div class="col-md-4">
         <div class="card shadow-sm border-0 sticky-top" style="border-radius:12px; top:80px">
             <div class="card-body">
@@ -64,7 +60,6 @@
                     <span class="text-success fw-bold fs-5" id="totalHarga">Rp 0</span>
                 </div>
 
-                {{-- POIN 3: Pilih metode bayar VA atau QRIS --}}
                 <div class="mb-3">
                     <label class="fw-bold">Metode Bayar</label>
                     <div class="d-flex gap-2 mt-1">
@@ -99,7 +94,6 @@
 
 </div>
 
-{{-- Modal Sukses --}}
 <div class="modal fade" id="modalSukses" tabindex="-1" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content text-center border-0" style="border-radius:16px">
@@ -107,7 +101,6 @@
                 <div style="font-size:4rem">✅</div>
                 <h4 class="text-success fw-bold mt-2">Pembayaran Berhasil!</h4>
 
-                {{-- POIN 1: Tampilkan nama guest yang di-generate otomatis --}}
                 <p class="text-muted mb-3">Pesanan Anda telah diterima</p>
                 <div class="alert alert-light text-start">
                     <table class="table table-sm mb-0">
@@ -128,6 +121,19 @@
                         </tr>
                     </table>
                 </div>
+
+                <div class="mt-3 mb-3">
+                    <p class="text-muted small mb-2">
+                        <i class="mdi mdi-qrcode me-1"></i>
+                        Tunjukkan QR Code ini ke kasir
+                    </p>
+                    <img id="qrCodeImg"
+                         src=""
+                         alt="QR Code Pesanan"
+                         style="width:200px;height:200px;border:1px solid #eee;border-radius:8px;background:#f8f8f8">
+                </div>
+
+
                 <button class="btn btn-gradient-primary w-100 mt-2"
                         data-bs-dismiss="modal" onclick="resetOrder()">
                     Pesan Lagi
@@ -157,7 +163,6 @@ function formatRupiah(angka) {
     }).format(angka);
 }
 
-// Pilih metode bayar
 function pilihMetode(value, el) {
     metodeBayar = value;
     document.querySelectorAll('.form-check').forEach(e => {
@@ -167,14 +172,10 @@ function pilihMetode(value, el) {
     el.querySelector('input').checked = true;
 }
 
-// Init: set VA sebagai default aktif
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('.form-check').classList.add('border-primary', 'bg-light');
 });
 
-// ============================================================
-// POIN 2: Load menu setelah vendor dipilih (berjenjang)
-// ============================================================
 function loadMenu() {
     const idvendor = document.getElementById('vendorSelect').value;
     if (!idvendor) {
@@ -227,9 +228,6 @@ function renderMenu(menus) {
         </div>`).join('') + '</div>';
 }
 
-// ============================================================
-// Keranjang
-// ============================================================
 function addCart(idmenu, nama, harga) {
     const existing = cart.find(c => c.idmenu === idmenu);
     if (existing) {
@@ -270,9 +268,6 @@ function renderCart() {
     document.getElementById('totalHarga').textContent = formatRupiah(total);
 }
 
-// ============================================================
-// POIN 1, 3, 4: Bayar -> buat pesanan (guest otomatis) -> Midtrans -> update lunas
-// ============================================================
 function bayar() {
     const idvendor = document.getElementById('vendorSelect').value;
     if (!idvendor) return Swal.fire({ icon: 'warning', title: 'Pilih vendor dulu!' });
@@ -290,25 +285,20 @@ function bayar() {
 
         setBayarLoading(true);
 
-        // Step 1: POST pesanan -> backend generate Guest_0000001
         axios.post('/kantin/pesan', {
             idvendor,
             metode_bayar: metodeBayar,
             items: cart.map(c => ({ idmenu: c.idmenu, jumlah: c.jumlah })),
         }).then(res => {
             if (!res.data.success) throw new Error(res.data.error);
-            activePesanan = res.data; // { idpesanan, kode_pesanan, nama, total }
+            activePesanan = res.data;
 
-            // Step 2: Ambil snap token
             return axios.post('/kantin/payment/token', { idpesanan: res.data.idpesanan });
 
         }).then(res => {
             setBayarLoading(false);
 
-            // Step 3: Buka popup Midtrans
             snap.pay(res.data.token, {
-
-                // POIN 4: onSuccess -> update status_bayar = lunas di backend
                 onSuccess: function(result) {
                     axios.post('/kantin/payment/update-status', {
                         idpesanan    : activePesanan.idpesanan,
@@ -354,17 +344,22 @@ function setBayarLoading(loading) {
     document.getElementById('btnBayar').disabled = loading;
 }
 
-// POIN 1: Tampilkan nama guest hasil generate backend
 function tampilSukses(pesanan) {
     document.getElementById('sukses_nama').textContent  = pesanan.nama;
     document.getElementById('sukses_kode').textContent  = pesanan.kode_pesanan;
     document.getElementById('sukses_total').textContent = formatRupiah(pesanan.total);
+
+    document.getElementById('qrCodeImg').src = '/kantin/qr/' + pesanan.idpesanan;
+
     new bootstrap.Modal(document.getElementById('modalSukses')).show();
 }
 
 function resetOrder() {
     cart          = [];
     activePesanan = null;
+
+    document.getElementById('qrCodeImg').src = '';
+
     renderCart();
 }
 </script>

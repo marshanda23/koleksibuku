@@ -13,41 +13,28 @@ class KantinPaymentController extends Controller
 {
     public function __construct()
     {
-        // Konfigurasi dari .env
         Config::$serverKey    = env('MIDTRANS_SERVER_KEY');
         Config::$isProduction = env('MIDTRANS_IS_PRODUCTION', 'false') === 'true';
         Config::$isSanitized  = true;
         Config::$is3ds        = true;
-        
-        // Pengaturan Curl untuk keamanan koneksi di Localhost
         Config::$curlOptions  = [
-            CURLOPT_SSL_VERIFYHOST => 0,
             CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYHOST => 2,
+            CURLOPT_CAINFO         => 'C:/laragon/etc/ssl/cacert.pem',
         ];
     }
 
-    /**
-     * Membuat Snap Token untuk Midtrans
-     */
     public function createToken(Request $request)
     {
-        // Validasi input
         $request->validate(['idpesanan' => 'required']);
 
         try {
-            // Ambil data pesanan berdasarkan ID
             $pesanan = Pesanan::findOrFail($request->idpesanan);
 
-            // Cek jika pesanan sudah lunas
             if ($pesanan->status_bayar == 1) {
                 return response()->json(['error' => 'Pesanan ini sudah lunas'], 422);
             }
 
-            /**
-             * PENYEDERHANAAN ITEM DETAILS
-             * Mengirimkan satu item total untuk menghindari error "Undefined array key"
-             * yang disebabkan oleh relasi database yang tidak terbaca sempurna.
-             */
             $itemDetails = [
                 [
                     'id'       => 'ID-' . $pesanan->idpesanan,
@@ -59,7 +46,6 @@ class KantinPaymentController extends Controller
 
             $params = [
                 'transaction_details' => [
-                    // Tambahkan rand() agar Order ID selalu unik saat testing
                     'order_id'     => $pesanan->kode_pesanan . '-' . rand(),
                     'gross_amount' => (int) $pesanan->total,
                 ],
@@ -69,59 +55,49 @@ class KantinPaymentController extends Controller
                 'item_details' => $itemDetails,
             ];
 
-            // Request token ke Midtrans
             $snapToken = Snap::getSnapToken($params);
-            
-            // Simpan token ke database (opsional)
+
             $pesanan->update(['midtrans_token' => $snapToken]);
 
             return response()->json(['token' => $snapToken]);
 
         } catch (Exception $e) {
-            // Mengembalikan pesan error detail jika gagal
             return response()->json([
                 'status'  => 'error',
                 'message' => 'Gagal terhubung ke Midtrans: ' . $e->getMessage(),
-                'debug'   => 'Cek baris: ' . $e->getLine()
             ], 500);
         }
     }
 
-    /**
-     * Menangani Webhook/Notifikasi Otomatis dari Midtrans
-     */
     public function notification(Request $request)
     {
         try {
             $notif             = new Notification();
             $transactionStatus = $notif->transaction_status;
             $fraudStatus       = $notif->fraud_status;
-            
-            // Ambil kode pesanan asli (sebelum tanda '-')
-            $rawOrderId        = $notif->order_id;
-            $orderId           = explode('-', $rawOrderId)[0];
 
-            $statusBayar = 0; // default pending
+            $rawOrderId = $notif->order_id;
+            $orderId    = explode('-', $rawOrderId)[0];
+
+            $statusBayar = 0;
 
             if ($transactionStatus === 'capture' && $fraudStatus === 'accept') {
-                $statusBayar = 1; // lunas
+                $statusBayar = 1;
             } elseif ($transactionStatus === 'settlement') {
-                $statusBayar = 1; // lunas
+                $statusBayar = 1;
             } elseif (in_array($transactionStatus, ['deny', 'cancel', 'expire', 'failure'])) {
-                $statusBayar = 2; // gagal
+                $statusBayar = 2;
             }
 
             Pesanan::where('kode_pesanan', $orderId)->update(['status_bayar' => $statusBayar]);
 
             return response()->json(['message' => 'Notification Handled']);
+
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 500);
         }
     }
 
-    /**
-     * Fallback manual untuk update status dari Frontend
-     */
     public function updateStatus(Request $request)
     {
         $pesanan = Pesanan::where('idpesanan', $request->idpesanan)
@@ -135,12 +111,10 @@ class KantinPaymentController extends Controller
         return response()->json(['success' => true]);
     }
 
-    /**
-     * Cek status pembayaran untuk polling di frontend
-     */
     public function cekStatus($idpesanan)
     {
         $pesanan = Pesanan::findOrFail($idpesanan);
+
         return response()->json([
             'status_bayar' => $pesanan->status_bayar,
             'kode_pesanan' => $pesanan->kode_pesanan,

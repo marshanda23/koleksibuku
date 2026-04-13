@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Hash;
 
 class KantinVendorController extends Controller
 {
-    // Halaman login vendor
     public function loginView()
     {
         if (session('vendor_id')) {
@@ -19,7 +18,6 @@ class KantinVendorController extends Controller
         return view('kantin.vendor.login');
     }
 
-    // Proses login vendor
     public function login(Request $request)
     {
         $request->validate([
@@ -48,7 +46,6 @@ class KantinVendorController extends Controller
         return redirect('/kantin/vendor/login');
     }
 
-    // Dashboard: pesanan lunas
     public function dashboard()
     {
         if (!session('vendor_id')) {
@@ -63,7 +60,6 @@ class KantinVendorController extends Controller
         return view('kantin.vendor.dashboard', compact('pesanan'));
     }
 
-    // Halaman kelola menu
     public function menuIndex()
     {
         if (!session('vendor_id')) {
@@ -74,7 +70,6 @@ class KantinVendorController extends Controller
         return view('kantin.vendor.menu', compact('menus'));
     }
 
-    // Simpan menu baru
     public function menuStore(Request $request)
     {
         $request->validate([
@@ -97,7 +92,7 @@ class KantinVendorController extends Controller
         return back()->with('success', 'Menu berhasil ditambahkan!');
     }
 
-    // Hapus menu
+   
     public function menuDestroy($id)
     {
         Menu::where('idmenu', $id)
@@ -130,12 +125,8 @@ public function menuUpdate(Request $request, $id)
 
     return back()->with('success', 'Menu berhasil diperbarui!');
 }
-
-    // =============================================
     // REGISTER VENDOR
-    // =============================================
-
-    // Halaman register vendor
+    
     public function registerView()
     {
         if (session('vendor_id')) {
@@ -163,9 +154,6 @@ public function menuUpdate(Request $request, $id)
                          ->with('success', 'Akun berhasil dibuat! Silakan login.');
     }
 
-    // =============================================
-    // FORGOT PASSWORD VENDOR
-    // =============================================
 
     // Halaman forgot password
     public function forgotView()

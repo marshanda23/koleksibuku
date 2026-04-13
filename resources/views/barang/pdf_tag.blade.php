@@ -5,55 +5,73 @@
     <title>Cetak Label TnJ 108</title>
     <style>
         @page {
-            size: portrait;
-           margin: 5mm 2mm; 
+            size: 210mm 297mm;
+            margin: 10mm 8mm 5mm 8mm;
         }
-        
-        body { font-family: 'Helvetica', sans-serif; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Helvetica', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
 
         table {
             table-layout: fixed;
             border-collapse: separate;
-         border-spacing: 2mm 1mm; 
-        margin: 2mm;
-        margin-left: 0; 
-            margin-top: 0;
+            border-spacing: 2mm 1.5mm;
+            margin: 0;
             width: auto;
-    }
+        }
 
         td.label-box, td.label-blank {
             width: 38mm;
-        height: 19mm;
-        border: 0.1pt solid #eee;
-        text-align: center;
-        vertical-align: middle;
-        padding: 1mm;
-        overflow: hidden;
-        box-sizing: border-box;
+            height: 18mm;
+            border: 0.1pt solid #eee;
+            text-align: center;
+            vertical-align: middle;
+            padding: 0.8mm;
+            overflow: hidden;
+            box-sizing: border-box;
         }
 
         .nama {
-            font-size: 9pt;
+            font-size: 6pt;
             font-weight: bold;
             display: block;
-            margin-bottom: 1px;
             white-space: nowrap;
             overflow: hidden;
+            line-height: 1.2;
         }
 
         .harga {
-            font-size: 10pt;
+            font-size: 8pt;
             font-weight: 900;
             color: #000;
             display: block;
-            margin-top: 3px;
+            margin-top: 1px;
+            line-height: 1;
         }
 
         .id {
-            font-size: 7pt;
-            color: #777;
+            font-size: 5.5pt;
+            color: #555;
             display: block;
-            margin-top: 8px;
+            margin-top: 1px;
+            line-height: 1;
+        }
+
+        .barcode-wrap {
+            display: block;
+            text-align: center;
+            margin: 1px auto 0 auto;
+            line-height: 0;
+        }
+
+        .barcode-wrap img {
+            width: 34mm;
+            height: 6mm;
+            display: block;
+            margin: 0 auto;
         }
     </style>
 </head>
@@ -81,8 +99,14 @@
                 <td class="label-blank"></td>
             @else
                 <td class="label-box">
-                    <span class="nama">{{ strtoupper(substr($cell['data']->nama, 0, 18)) }}</span>
+                    <span class="nama">{{ strtoupper(substr($cell['data']->nama, 0, 22)) }}</span>
                     <span class="harga">Rp {{ number_format($cell['data']->harga, 0, ',', '.') }}</span>
+
+                    <span class="barcode-wrap">
+                        <img src="{{ $barcodes[$cell['data']->id_barang] }}"
+                             alt="{{ $cell['data']->id_barang }}">
+                    </span>
+
                     <span class="id">{{ $cell['data']->id_barang }}</span>
                 </td>
             @endif

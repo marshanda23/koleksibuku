@@ -8,13 +8,12 @@ class Menu extends Model
 {
     protected $table      = 'menu';
     protected $primaryKey = 'idmenu';
-    public $timestamps    = false;
 
     protected $fillable = [
+        'idvendor',
         'nama_menu',
         'harga',
         'path_gambar',
-        'idvendor',
     ];
 
     public function vendor()
@@ -22,7 +21,7 @@ class Menu extends Model
         return $this->belongsTo(Vendor::class, 'idvendor', 'idvendor');
     }
 
-    public function detailPesanan()
+    public function details()
     {
         return $this->hasMany(DetailPesanan::class, 'idmenu', 'idmenu');
     }

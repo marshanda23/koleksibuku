@@ -11,21 +11,18 @@ use Illuminate\Support\Facades\DB;
 
 class KantinCustomerController extends Controller
 {
-    // Halaman order customer (tanpa login)
     public function index()
     {
         $vendors = Vendor::all();
         return view('kantin.customer.index', compact('vendors'));
     }
-
-    // API: ambil menu by vendor
     public function getMenu($idvendor)
     {
         $menu = Menu::where('idvendor', $idvendor)->get();
         return response()->json($menu);
     }
 
-    // POST: buat pesanan baru
+    // POST
     public function pesan(Request $request)
     {
         $request->validate([
@@ -36,14 +33,10 @@ class KantinCustomerController extends Controller
 
         DB::beginTransaction();
         try {
-            // -------------------------------------------------------
-            // POIN 1: Generate nama guest otomatis Guest_0000001 dst.
-            // Pakai COUNT agar tidak loncat walau ada data terhapus
-            // -------------------------------------------------------
+
             $totalPesanan = Pesanan::count();
             $namaCustomer = 'Guest_' . str_pad($totalPesanan + 1, 7, '0', STR_PAD_LEFT);
 
-            // Ambil harga dari DB (jangan percaya harga dari frontend)
             $total          = 0;
             $validatedItems = [];
             foreach ($request->items as $item) {

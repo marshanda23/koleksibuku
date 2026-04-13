@@ -8,22 +8,22 @@ class Pesanan extends Model
 {
     protected $table      = 'pesanan';
     protected $primaryKey = 'idpesanan';
-    public $timestamps    = false;
 
     protected $fillable = [
+        'idvendor',      
         'nama',
+        'kode_pesanan',
         'total',
         'metode_bayar',
         'status_bayar',
-        'kode_pesanan',
         'midtrans_token',
-        'midtrans_order_id',
         'timestamp',
     ];
 
-    protected $casts = [
-        'timestamp' => 'datetime',
-    ];
+    public function vendor()
+    {
+        return $this->belongsTo(Vendor::class, 'idvendor', 'idvendor');
+    }
 
     public function details()
     {

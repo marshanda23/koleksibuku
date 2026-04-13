@@ -31,25 +31,20 @@
 <i class="menu-arrow"></i>
 <i class="mdi mdi-lock menu-icon"></i>
 </a>
-
 <div class="collapse" id="user-pages">
 <ul class="nav flex-column sub-menu">
-
 <li class="nav-item">
 <a class="nav-link" href="{{ route('login') }}">Login</a>
 </li>
-
 @if (Route::has('register'))
 <li class="nav-item">
 <a class="nav-link" href="{{ route('register') }}">Register</a>
 </li>
 @endif
-
 </ul>
 </div>
 </li>
 @endguest
-
 
 
 @auth
@@ -63,7 +58,6 @@ href="{{ route('home') }}">
 </a>
 </li>
 
-
 {{-- KATEGORI --}}
 <li class="nav-item">
 <a class="nav-link {{ request()->routeIs('kategori.*') ? 'active' : '' }}"
@@ -72,7 +66,6 @@ href="{{ route('kategori.index') }}">
 <i class="mdi mdi-format-list-bulleted menu-icon"></i>
 </a>
 </li>
-
 
 {{-- BUKU --}}
 <li class="nav-item">
@@ -83,7 +76,6 @@ href="{{ route('buku.index') }}">
 </a>
 </li>
 
-
 {{-- BARANG --}}
 <li class="nav-item">
 <a class="nav-link {{ request()->routeIs('barang.*') ? 'active' : '' }}"
@@ -93,11 +85,8 @@ href="{{ route('barang.index') }}">
 </a>
 </li>
 
-
-
 {{-- BARANG JS --}}
 <li class="nav-item">
-
 <a class="nav-link {{ request()->routeIs('barang.js*') ? 'active' : '' }}"
 data-bs-toggle="collapse"
 href="#barangJSMenu">
@@ -105,29 +94,25 @@ href="#barangJSMenu">
 <i class="menu-arrow"></i>
 <i class="mdi mdi-cube-outline menu-icon"></i>
 </a>
-
 <div class="collapse {{ request()->routeIs('barang.js*') ? 'show' : '' }}" id="barangJSMenu">
-
 <ul class="nav flex-column sub-menu">
-
 <li class="nav-item">
 <a class="nav-link {{ request()->routeIs('barang.js') ? 'active' : '' }}"
 href="{{ route('barang.js') }}">
 HTML Table
 </a>
 </li>
-
 <li class="nav-item">
 <a class="nav-link {{ request()->routeIs('barang.js.datatables') ? 'active' : '' }}"
 href="{{ route('barang.js.datatables') }}">
 DataTables
 </a>
 </li>
-
 </ul>
 </div>
 </li>
 
+{{-- POS --}}
 <li class="nav-item">
 <a class="nav-link {{ request()->routeIs('pos.*') ? 'active' : '' }}"
 href="{{ route('pos.index') }}">
@@ -136,6 +121,7 @@ href="{{ route('pos.index') }}">
 </a>
 </li>
 
+{{-- WILAYAH --}}
 <li class="nav-item">
 <a class="nav-link {{ request()->routeIs('wilayah.*') ? 'active' : '' }}"
 href="{{ route('wilayah.index') }}">
@@ -153,6 +139,7 @@ href="{{ route('select.index') }}">
 </a>
 </li>
 
+{{-- CETAK SERTIFIKAT --}}
 <li class="nav-item">
 <a class="nav-link" href="{{ route('pdf.sertifikat') }}" target="_blank">
 <span class="menu-title">Cetak Sertifikat</span>
@@ -160,6 +147,7 @@ href="{{ route('select.index') }}">
 </a>
 </li>
 
+{{-- CETAK UNDANGAN --}}
 <li class="nav-item">
 <a class="nav-link" href="{{ route('pdf.undangan') }}" target="_blank">
 <span class="menu-title">Cetak Undangan</span>
@@ -176,28 +164,58 @@ href="{{ route('select.index') }}">
         <i class="menu-arrow"></i>
         <i class="mdi mdi-food menu-icon"></i>
     </a>
-
     <div class="collapse {{ request()->is('kantin*') ? 'show' : '' }}" id="kantinMenu">
         <ul class="nav flex-column sub-menu">
-
             <li class="nav-item">
                 <a class="nav-link {{ request()->is('kantin/order') ? 'active' : '' }}"
                    href="{{ url('/kantin/order') }}">
                     Order Customer
                 </a>
             </li>
-
             <li class="nav-item">
                 <a class="nav-link {{ request()->is('kantin/vendor*') ? 'active' : '' }}"
                    href="{{ url('/kantin/vendor/login') }}">
                     Vendor Login
                 </a>
             </li>
-
         </ul>
     </div>
 </li>
 
+{{-- CUSTOMER --}}
+<li class="nav-item">
+    <a class="nav-link {{ request()->is('customer*') ? 'active' : '' }}"
+       data-bs-toggle="collapse"
+       href="#customerMenu">
+        <span class="menu-title">Customer</span>
+        <i class="menu-arrow"></i>
+        <i class="mdi mdi-account-group menu-icon"></i>
+    </a>
+    <div class="collapse {{ request()->is('customer*') ? 'show' : '' }}" id="customerMenu">
+        <ul class="nav flex-column sub-menu">
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('customer.index') ? 'active' : '' }}"
+                   href="{{ route('customer.index') }}">
+                    Data Customer
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('customer.tambah1') ? 'active' : '' }}"
+                   href="{{ route('customer.tambah1') }}">
+                    Tambah Customer 1
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('customer.tambah2') ? 'active' : '' }}"
+                   href="{{ route('customer.tambah2') }}">
+                    Tambah Customer 2
+                </a>
+            </li>
+        </ul>
+    </div>
+</li>
+
+{{-- SIGN OUT --}}
 <li class="nav-item">
 <a class="nav-link"
 href="{{ route('logout') }}"

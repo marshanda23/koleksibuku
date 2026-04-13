@@ -6,8 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Barang;
 use PDF;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB; 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Picqer\Barcode\BarcodeGeneratorPNG;
 
 class BarangController extends Controller
 {
@@ -17,66 +18,64 @@ class BarangController extends Controller
         return view('barang.index', compact('barang'))->with('barang_edit', null);
     }
 
-   public function store(Request $request)
-{
-    $request->validate([
-        'nama'  => 'required|string|max:50',
-        'harga' => 'required|integer|min:0',
-    ]);
+    public function store(Request $request)
+    {
+        $request->validate([
+            'nama'  => 'required|string|max:50',
+            'harga' => 'required|integer|min:0',
+        ]);
 
-    $maxAttempts = 5;
-    $attempt = 0;
+        $maxAttempts = 5;
+        $attempt     = 0;
 
-    while ($attempt < $maxAttempts) {
-        try {
-            
-            DB::transaction(function () use ($request) {
-                $prefix = now()->format('ymd');
-                
-                $last = Barang::where('id_barang', 'like', $prefix . '%')
-                    ->orderBy('id_barang', 'desc')
-                    ->lockForUpdate() 
-                    ->first();
+        while ($attempt < $maxAttempts) {
+            try {
+                DB::transaction(function () use ($request) {
+                    $prefix = now()->format('ymd');
 
-                $seq = $last ? (intval(substr($last->id_barang, 6)) + 1) : 1;
-                $newId = $prefix . str_pad($seq, 2, '0', STR_PAD_LEFT);
-                
-                Log::info("Mencoba membuat ID: $newId");
+                    $last = Barang::where('id_barang', 'like', $prefix . '%')
+                        ->orderBy('id_barang', 'desc')
+                        ->lockForUpdate()
+                        ->first();
 
-                // Simpan data
-                Barang::create([
-                    'id_barang' => $newId,
-                    'nama'      => $request->nama,
-                    'harga'     => $request->harga,
-                    'timestamp' => Carbon::now(),
-                ]);
-            });
+                    $seq   = $last ? (intval(substr($last->id_barang, 6)) + 1) : 1;
+                    $newId = $prefix . str_pad($seq, 2, '0', STR_PAD_LEFT);
 
-            return redirect()->route('barang.index')
-                ->with('success', 'Barang berhasil ditambahkan!');
+                    Log::info("Mencoba membuat ID: $newId");
 
-        } catch (\Illuminate\Database\QueryException $e) {
-            Log::error('Error menyimpan barang: ' . $e->getMessage());
+                    Barang::create([
+                        'id_barang' => $newId,
+                        'nama'      => $request->nama,
+                        'harga'     => $request->harga,
+                        'timestamp' => Carbon::now(),
+                    ]);
+                });
 
-            if ($e->getCode() === '23505') {
-                $attempt++;
-                Log::info("Percobaan ke-$attempt: Konflik ID, transaksi di-rollback, mencoba lagi...");
-                usleep(200000); 
-                continue;
+                return redirect()->route('barang.index')
+                    ->with('success', 'Barang berhasil ditambahkan!');
+
+            } catch (\Illuminate\Database\QueryException $e) {
+                Log::error('Error menyimpan barang: ' . $e->getMessage());
+
+                if ($e->getCode() === '23505') {
+                    $attempt++;
+                    Log::info("Percobaan ke-$attempt: Konflik ID, mencoba lagi...");
+                    usleep(200000);
+                    continue;
+                }
+
+                throw $e;
             }
-            
-            throw $e;
         }
-    }
 
-    return redirect()->back()->with('error', 'Gagal menambahkan barang karena konflik data berulang. Silakan coba lagi.');
-}
+        return redirect()->back()->with('error', 'Gagal menambahkan barang karena konflik data berulang. Silakan coba lagi.');
+    }
 
     public function edit($id)
     {
         $barang      = Barang::orderBy('id_barang', 'asc')->get();
-        $barang_edit = Barang::where('id_barang', $id)->firstOrFail(); 
-        
+        $barang_edit = Barang::where('id_barang', $id)->firstOrFail();
+
         return view('barang.index', compact('barang', 'barang_edit'));
     }
 
@@ -86,24 +85,24 @@ class BarangController extends Controller
             'nama'  => 'required|string|max:50',
             'harga' => 'required|integer|min:0',
         ]);
-        
+
         Barang::where('id_barang', $id)->update([
             'nama'  => $request->nama,
             'harga' => $request->harga,
         ]);
 
         return redirect()->route('barang.index')
-                         ->with('success', 'Barang berhasil diperbarui!');
+            ->with('success', 'Barang berhasil diperbarui!');
     }
 
     public function destroy($id)
     {
-        // Hapus 
         Barang::where('id_barang', $id)->delete();
-        
+
         return redirect()->route('barang.index')
-                         ->with('success', 'Barang berhasil dihapus!');
+            ->with('success', 'Barang berhasil dihapus!');
     }
+
     public function cetakTag(Request $request)
     {
         $x   = $request->input('x');
@@ -117,11 +116,25 @@ class BarangController extends Controller
         $blank_spaces    = (($y - 1) * 5) + ($x - 1);
         $barang_terpilih = Barang::whereIn('id_barang', $ids)->get();
 
+        $generator = new BarcodeGeneratorPNG();
+        $barcodes  = [];
+
+        foreach ($barang_terpilih as $item) {
+            $png = $generator->getBarcode(
+                (string) $item->id_barang,
+                $generator::TYPE_CODE_128,
+                1, 
+                30  
+            );
+            $barcodes[$item->id_barang] = 'data:image/png;base64,' . base64_encode($png);
+        }
+
         $pdf = PDF::loadView('barang.pdf_tag', [
             'barang_terpilih' => $barang_terpilih,
             'blank_spaces'    => $blank_spaces,
+            'barcodes'        => $barcodes,
         ]);
-        
+
         return $pdf->setPaper('a4', 'portrait')->stream('Tag_Harga_ATK.pdf');
     }
 }

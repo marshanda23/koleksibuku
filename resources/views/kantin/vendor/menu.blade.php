@@ -34,7 +34,7 @@
                         <input type="text"
                                name="nama_menu"
                                class="form-control border-primary"
-                               placeholder="Contoh: Nasi Ayam"
+                               placeholder=""
                                required>
                     </div>
 
@@ -43,7 +43,7 @@
                         <input type="number"
                                name="harga"
                                class="form-control border-primary"
-                               placeholder="Contoh: 15000"
+                               placeholder=""
                                required>
                     </div>
 
@@ -138,7 +138,6 @@
     </div>
 </div>
 
-{{-- Modal Edit Menu --}}
 <div class="modal fade" id="modalEdit" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content" style="border-radius:12px">

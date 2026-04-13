@@ -23,7 +23,7 @@
                     <div class="d-flex align-items-center gap-2">
                         <span class="badge badge-gradient-info">{{ count($barang) }} Item</span>
                         <button type="button" class="btn btn-gradient-primary btn-sm shadow-sm"
-                                style="border-radius: 8px;" onclick="$('#modalTambah').modal('show')">
+                                style="border-radius: 8px;" onclick="new bootstrap.Modal(document.getElementById('modalTambah')).show()">
                             <i class="mdi mdi-plus me-1"></i> Tambah Barang
                         </button>
                     </div>
@@ -162,7 +162,7 @@
                 <h5 class="modal-title text-primary" id="labelTambah">
                     <i class="mdi mdi-plus-circle-outline me-2"></i> Tambah Barang
                 </h5>
-                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             </div>
             <div class="modal-body pt-2">
                 <form id="formTambah" action="{{ route('barang.store') }}" method="POST"> 
@@ -204,7 +204,7 @@
                 <h5 class="modal-title text-primary" id="labelEdit">
                     <i class="mdi mdi-border-color me-2"></i> Edit Barang
                 </h5>
-                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             </div>
             <div class="modal-body pt-2">
                 <form id="formEdit" action="" method="POST">
@@ -253,7 +253,7 @@
             
             $('#formEdit').attr('action', '/barang/' + id);
 
-            $('#modalEdit').modal('show');
+            new bootstrap.Modal(document.getElementById('modalEdit')).show();
         });
 
         $(document).on('click', '.btn-delete-trigger', function(e) {
