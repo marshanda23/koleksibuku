@@ -21,11 +21,14 @@
                         <i class="mdi mdi-table me-2"></i>Daftar Barang ATK
                     </h4>
                     <div class="d-flex align-items-center gap-2">
-                        <span class="badge badge-gradient-info">{{ count($barang) }} Item</span>
-                        <button type="button" class="btn btn-gradient-primary btn-sm shadow-sm"
-                                style="border-radius: 8px;" onclick="new bootstrap.Modal(document.getElementById('modalTambah')).show()">
-                            <i class="mdi mdi-plus me-1"></i> Tambah Barang
-                        </button>
+                    <span class="badge badge-gradient-info">{{ count($barang) }} Item</span>
+                    <a href="{{ route('barang.scan.index') }}" class="btn btn-gradient-success btn-sm shadow-sm" style="border-radius: 8px;">
+                        <i class="mdi mdi-barcode-scan me-1"></i> Scanner Barcode
+                    </a>
+                    <button type="button" class="btn btn-gradient-primary btn-sm shadow-sm"
+                            style="border-radius: 8px;" onclick="new bootstrap.Modal(document.getElementById('modalTambah')).show()">
+                        <i class="mdi mdi-plus me-1"></i> Tambah Barang
+                    </button>
                     </div>
                 </div>
 
@@ -110,11 +113,14 @@
                                 <input type="number" name="y" class="form-control border-primary" min="1" max="8" value="1" required style="border-radius: 8px;">
                             </div>
                         </div>
-                        <div class="col-md-6 d-flex align-items-center pt-2">
-                            <button type="submit" class="btn btn-gradient-primary btn-icon-text shadow-sm" style="border-radius: 8px;">
-                                <i class="mdi mdi-printer btn-icon-prepend"></i> Cetak label 
-                            </button>
-                        </div>
+                        <div class="col-md-6 d-flex align-items-center pt-2 gap-2">
+                        <button type="submit" class="btn btn-gradient-primary btn-icon-text shadow-sm" style="border-radius: 8px;">
+                            <i class="mdi mdi-printer btn-icon-prepend"></i> Cetak label
+                        </button>
+                        <a href="{{ route('barang.scan.index') }}" class="btn btn-gradient-success btn-icon-text shadow-sm" style="border-radius: 8px;">
+                            <i class="mdi mdi-barcode-scan btn-icon-prepend"></i> Scanner Barcode
+                        </a>
+                    </div>
                     </div>
 
                     <hr>

@@ -95,6 +95,27 @@ class BarangController extends Controller
             ->with('success', 'Barang berhasil diperbarui!');
     }
 
+    public function scanIndex()
+{
+    return view('barang.scan-barcode');
+}
+
+public function scanBarcode($id_barang)
+{
+    $barang = \App\Models\Barang::where('id_barang', $id_barang)->first();
+
+    if (!$barang) {
+        return response()->json(['success' => false]);
+    }
+
+    return response()->json([
+        'success'   => true,
+        'id_barang' => $barang->id_barang,
+        'nama'      => $barang->nama,
+        'harga'     => number_format($barang->harga, 0, ',', '.'),
+    ]);
+}
+
     public function destroy($id)
     {
         Barang::where('id_barang', $id)->delete();

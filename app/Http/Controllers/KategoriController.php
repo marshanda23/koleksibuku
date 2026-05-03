@@ -15,7 +15,7 @@ class KategoriController extends Controller
 
     public function store(Request $request)
     {
-        // Validasi: Nama harus unik di tabel kategoris
+        
         $request->validate([
             'nama_kategori' => 'required|string|max:255|unique:kategoris,nama_kategori'
         ], [
@@ -53,7 +53,6 @@ class KategoriController extends Controller
     {
         $kategori = Kategori::findOrFail($id);
         
-        // Proteksi jika kategori masih ada bukunya
         if ($kategori->buku()->count() > 0) {
             return redirect()->back()->with('error', 'Kategori "' . $kategori->nama_kategori . '" tidak bisa dihapus karena masih digunakan oleh data buku!');
         }

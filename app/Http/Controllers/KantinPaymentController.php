@@ -13,71 +13,80 @@ class KantinPaymentController extends Controller
 {
     public function __construct()
     {
-        Config::$serverKey    = env('MIDTRANS_SERVER_KEY');
-        Config::$isProduction = env('MIDTRANS_IS_PRODUCTION', 'false') === 'true';
+        Config::$serverKey    = config('services.midtrans.server_key');
+        Config::$isProduction = config('services.midtrans.is_production', false);
         Config::$isSanitized  = true;
         Config::$is3ds        = true;
-        Config::$curlOptions  = [
-            CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_SSL_VERIFYHOST => 2,
-            CURLOPT_CAINFO         => 'C:/laragon/etc/ssl/cacert.pem',
-        ];
+
     }
 
     public function createToken(Request $request)
     {
-        $request->validate(['idpesanan' => 'required']);
+        $request->validate([
+            'idpesanan' => 'required'
+        ]);
 
-        try {
-            $pesanan = Pesanan::findOrFail($request->idpesanan);
+        $pesanan = Pesanan::findOrFail($request->idpesanan);
 
-            if ($pesanan->status_bayar == 1) {
-                return response()->json(['error' => 'Pesanan ini sudah lunas'], 422);
-            }
+        // validasi basic (biar gak kirim data sampah ke Midtrans)
+        if ($pesanan->status_bayar == 1) {
+            return response()->json(['error' => 'Pesanan ini sudah lunas'], 422);
+        }
 
-            $itemDetails = [
+        if (!$pesanan->total || $pesanan->total <= 0) {
+            dd('Total tidak valid', $pesanan);
+        }
+
+        $orderId = $pesanan->kode_pesanan . '-' . time();
+
+        $params = [
+            'transaction_details' => [
+                'order_id'     => $orderId,
+                'gross_amount' => (int) $pesanan->total,
+            ],
+            'customer_details' => [
+                'first_name' => $pesanan->nama ?? 'Customer',
+            ],
+            'item_details' => [
                 [
                     'id'       => 'ID-' . $pesanan->idpesanan,
                     'price'    => (int) $pesanan->total,
                     'quantity' => 1,
-                    'name'     => 'Pembayaran Pesanan #' . substr($pesanan->kode_pesanan, 0, 20),
+                    'name'     => 'Pesanan #' . substr($pesanan->kode_pesanan, 0, 20),
                 ]
-            ];
+            ],
+        ];
 
-            $params = [
-                'transaction_details' => [
-                    'order_id'     => $pesanan->kode_pesanan . '-' . rand(),
-                    'gross_amount' => (int) $pesanan->total,
-                ],
-                'customer_details' => [
-                    'first_name' => $pesanan->nama ?? 'Customer',
-                ],
-                'item_details' => $itemDetails,
-            ];
-
+        try {
             $snapToken = Snap::getSnapToken($params);
-
-            $pesanan->update(['midtrans_token' => $snapToken]);
-
-            return response()->json(['token' => $snapToken]);
-
         } catch (Exception $e) {
-            return response()->json([
-                'status'  => 'error',
-                'message' => 'Gagal terhubung ke Midtrans: ' . $e->getMessage(),
-            ], 500);
+            dd([
+                'error' => $e->getMessage(),
+                'server_key' => config('services.midtrans.server_key'),
+                'is_production' => config('services.midtrans.is_production'),
+                'params' => $params,
+            ]);
         }
+
+        $pesanan->update(['midtrans_token' => $snapToken]);
+
+        return response()->json([
+            'token' => $snapToken
+        ]);
     }
 
     public function notification(Request $request)
     {
+        \Log::info('MIDTRANS MASUK', $request->all());
         try {
             $notif             = new Notification();
             $transactionStatus = $notif->transaction_status;
             $fraudStatus       = $notif->fraud_status;
 
-            $rawOrderId = $notif->order_id;
-            $orderId    = explode('-', $rawOrderId)[0];
+            $rawOrderId  = $notif->order_id;
+            $parts       = explode('-', $rawOrderId);
+            array_pop($parts);
+            $kodePesanan = implode('-', $parts);
 
             $statusBayar = 0;
 
@@ -89,20 +98,23 @@ class KantinPaymentController extends Controller
                 $statusBayar = 2;
             }
 
-            Pesanan::where('kode_pesanan', $orderId)->update(['status_bayar' => $statusBayar]);
+            Pesanan::where('kode_pesanan', $kodePesanan)
+                ->update(['status_bayar' => $statusBayar]);
 
             return response()->json(['message' => 'Notification Handled']);
 
         } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 500);
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
 
     public function updateStatus(Request $request)
     {
         $pesanan = Pesanan::where('idpesanan', $request->idpesanan)
-                          ->where('kode_pesanan', $request->kode_pesanan)
-                          ->firstOrFail();
+            ->where('kode_pesanan', $request->kode_pesanan)
+            ->firstOrFail();
 
         if ($pesanan->status_bayar == 0) {
             $pesanan->update(['status_bayar' => 1]);

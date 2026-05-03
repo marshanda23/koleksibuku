@@ -33,8 +33,10 @@ Route::prefix('kantin')->name('kantin.')->group(function () {
     Route::get('/order', [KantinCustomerController::class, 'index'])->name('order');
     Route::get('/menu/{idvendor}', [KantinCustomerController::class, 'getMenu'])->name('menu');
     Route::post('/pesan', [KantinCustomerController::class, 'pesan'])->name('pesan');
-    Route::get('/kantin/qr/{idpesanan}', [KantinQrController::class, 'generate'])
-    ->name('kantin.qr');
+    
+    Route::get('/qr/{idpesanan}', [KantinQrController::class, 'generate'])->name('qr');
+     Route::get('/riwayat', [KantinCustomerController::class, 'riwayat'])->name('riwayat');
+     Route::get('/riwayat/{nama}', [KantinCustomerController::class, 'riwayatByNama'])->name('riwayat.nama');
 });
 
 // KANTIN - PAYMENT 
@@ -61,6 +63,8 @@ Route::prefix('kantin/vendor')->name('kantin.vendor.')->group(function () {
 
     Route::get('/forgot-password', [KantinVendorController::class, 'forgotView'])->name('forgot');
     Route::post('/forgot-password', [KantinVendorController::class, 'forgotReset'])->name('forgot.post');
+     Route::get('/scan', [KantinVendorController::class, 'scanView'])->name('scan');
+    Route::post('/scan', [KantinVendorController::class, 'scanProcess'])->name('scan.process');
 });
 
 // ROUTE DENGAN AUTH
@@ -92,6 +96,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/barang', [BarangController::class, 'index'])->name('barang.index');
     Route::post('/barang', [BarangController::class, 'store'])->name('barang.store');
+    Route::get('/scan-barcode', [BarangController::class, 'scanIndex'])->name('barang.scan.index');
+    Route::get('/barang/scan/{id_barang}', [BarangController::class, 'scanBarcode'])->name('barang.scan');
     Route::get('/barang/{id}/edit', [BarangController::class, 'edit'])->name('barang.edit');
     Route::put('/barang/{id}', [BarangController::class, 'update'])->name('barang.update');
     Route::delete('/barang/{id}', [BarangController::class, 'destroy'])->name('barang.destroy');

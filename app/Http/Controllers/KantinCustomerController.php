@@ -16,13 +16,13 @@ class KantinCustomerController extends Controller
         $vendors = Vendor::all();
         return view('kantin.customer.index', compact('vendors'));
     }
+
     public function getMenu($idvendor)
     {
         $menu = Menu::where('idvendor', $idvendor)->get();
         return response()->json($menu);
     }
 
-    // POST
     public function pesan(Request $request)
     {
         $request->validate([
@@ -33,7 +33,6 @@ class KantinCustomerController extends Controller
 
         DB::beginTransaction();
         try {
-
             $totalPesanan = Pesanan::count();
             $namaCustomer = 'Guest_' . str_pad($totalPesanan + 1, 7, '0', STR_PAD_LEFT);
 
@@ -59,7 +58,7 @@ class KantinCustomerController extends Controller
                 'nama'         => $namaCustomer,
                 'total'        => $total,
                 'metode_bayar' => $request->metode_bayar,
-                'status_bayar' => 0, // 0=pending, 1=lunas, 2=gagal
+                'status_bayar' => 0,
                 'kode_pesanan' => $kodePesanan,
                 'timestamp'    => now(),
             ]);
@@ -77,11 +76,13 @@ class KantinCustomerController extends Controller
 
             DB::commit();
 
+            session(['customer_nama' => $namaCustomer]);
+
             return response()->json([
                 'success'      => true,
                 'idpesanan'    => $pesanan->idpesanan,
                 'kode_pesanan' => $kodePesanan,
-                'nama'         => $namaCustomer, // dikirim ke frontend untuk ditampilkan
+                'nama'         => $namaCustomer,
                 'total'        => $total,
             ]);
 
@@ -89,5 +90,33 @@ class KantinCustomerController extends Controller
             DB::rollBack();
             return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
         }
+    }
+
+    public function riwayat()
+    {
+        $nama = session('customer_nama');
+
+        if (!$nama) {
+            return redirect()->route('kantin.order')
+                ->with('error', 'Silahkan lakukan pemesanan terlebih dahulu.');
+        }
+
+        $pesananList = Pesanan::with(['detailPesanan.menu'])
+            ->where('nama', $nama)
+            ->orderByDesc('created_at')
+            ->get();
+
+        return view('kantin.customer.riwayat', compact('pesananList', 'nama'));
+    }
+public function riwayatByNama($nama)
+    {
+        session(['customer_nama' => $nama]);
+ 
+        $pesananList = Pesanan::with(['detailPesanan.menu'])
+            ->where('nama', $nama)
+            ->orderByDesc('timestamp')
+            ->get();
+ 
+        return view('kantin.customer.riwayat', compact('pesananList', 'nama'));
     }
 }

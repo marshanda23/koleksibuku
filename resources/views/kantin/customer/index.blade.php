@@ -133,11 +133,16 @@
                          style="width:200px;height:200px;border:1px solid #eee;border-radius:8px;background:#f8f8f8">
                 </div>
 
-
+                {{-- Tombol Pesan Lagi --}}
                 <button class="btn btn-gradient-primary w-100 mt-2"
                         data-bs-dismiss="modal" onclick="resetOrder()">
                     Pesan Lagi
                 </button>
+                
+                <button onclick="keRiwayat()" class="btn btn-outline-primary w-100 mt-2">
+                    <i class="mdi mdi-history me-1"></i> Lihat Riwayat & QR Code
+                </button>
+
             </div>
         </div>
     </div>
@@ -348,8 +353,9 @@ function tampilSukses(pesanan) {
     document.getElementById('sukses_nama').textContent  = pesanan.nama;
     document.getElementById('sukses_kode').textContent  = pesanan.kode_pesanan;
     document.getElementById('sukses_total').textContent = formatRupiah(pesanan.total);
-
     document.getElementById('qrCodeImg').src = '/kantin/qr/' + pesanan.idpesanan;
+
+    localStorage.setItem('kantin_nama', pesanan.nama);
 
     new bootstrap.Modal(document.getElementById('modalSukses')).show();
 }
@@ -357,10 +363,17 @@ function tampilSukses(pesanan) {
 function resetOrder() {
     cart          = [];
     activePesanan = null;
-
     document.getElementById('qrCodeImg').src = '';
-
     renderCart();
+}
+
+function keRiwayat() {
+    const nama = localStorage.getItem('kantin_nama');
+    if (nama) {
+        window.location.href = '/kantin/riwayat/' + encodeURIComponent(nama);
+    } else {
+        window.location.href = '{{ route("kantin.riwayat") }}';
+    }
 }
 </script>
 
