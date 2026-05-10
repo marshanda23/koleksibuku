@@ -14,6 +14,7 @@ use App\Http\Controllers\KantinVendorController;
 use App\Http\Controllers\KantinPaymentController;
 use App\Http\Controllers\KantinQrController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\KunjunganTokoController;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
@@ -134,4 +135,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/barang/cetak-tag', [BarangController::class, 'cetakTag'])->name('barang.cetak_tag');
     Route::get('/download-sertifikat', [PdfController::class, 'sertifikat'])->name('pdf.sertifikat');
     Route::get('/download-undangan', [PdfController::class, 'undangan'])->name('pdf.undangan');
+
+Route::prefix('kunjungan-toko')->group(function () {
+    Route::get('/',               [KunjunganTokoController::class, 'index'])->name('kunjungan.index');
+    Route::post('/simpan-toko',   [KunjunganTokoController::class, 'simpanToko'])->name('kunjungan.simpanToko');
+    Route::get('/get-toko/{barcode}', [KunjunganTokoController::class, 'getToko']);
+    Route::post('/proses',        [KunjunganTokoController::class, 'prosesKunjungan'])->name('kunjungan.proses');
+});
 });

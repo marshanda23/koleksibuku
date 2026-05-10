@@ -215,6 +215,15 @@ href="{{ route('select.index') }}">
     </div>
 </li>
 
+{{-- KUNJUNGAN TOKO --}}
+<li class="nav-item">
+    <a class="nav-link {{ request()->is('kunjungan-toko*') ? 'active' : '' }}"
+       href="{{ url('/kunjungan-toko') }}">
+        <span class="menu-title">Kunjungan Toko</span>
+        <i class="mdi mdi-store menu-icon"></i>
+    </a>
+</li>
+
 {{-- SIGN OUT --}}
 <li class="nav-item">
 <a class="nav-link"
