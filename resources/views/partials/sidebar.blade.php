@@ -224,6 +224,39 @@ href="{{ route('select.index') }}">
     </a>
 </li>
 
+{{-- ANTRIAN --}}
+<li class="nav-item">
+    <a class="nav-link {{ request()->is('antrian*') ? 'active' : '' }}"
+       data-bs-toggle="collapse"
+       href="#antrianMenu">
+        <span class="menu-title">Antrian</span>
+        <i class="menu-arrow"></i>
+        <i class="mdi mdi-ticket-account menu-icon"></i>
+    </a>
+    <div class="collapse {{ request()->is('antrian*') ? 'show' : '' }}" id="antrianMenu">
+        <ul class="nav flex-column sub-menu">
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('antrian.guest') ? 'active' : '' }}"
+                   href="{{ route('antrian.guest') }}">
+                    Daftar Antrian
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('antrian.admin') ? 'active' : '' }}"
+                   href="{{ route('antrian.admin') }}">
+                    Admin Antrian
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('antrian.papan') ? 'active' : '' }}"
+                   href="{{ route('antrian.papan') }}" target="_blank">
+                    Papan Antrian
+                </a>
+            </li>
+        </ul>
+    </div>
+</li>
+
 {{-- SIGN OUT --}}
 <li class="nav-item">
 <a class="nav-link"

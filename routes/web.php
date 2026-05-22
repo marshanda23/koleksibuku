@@ -15,6 +15,7 @@ use App\Http\Controllers\KantinPaymentController;
 use App\Http\Controllers\KantinQrController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\KunjunganTokoController;
+use App\Http\Controllers\AntrianController;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
@@ -66,6 +67,22 @@ Route::prefix('kantin/vendor')->name('kantin.vendor.')->group(function () {
     Route::post('/forgot-password', [KantinVendorController::class, 'forgotReset'])->name('forgot.post');
      Route::get('/scan', [KantinVendorController::class, 'scanView'])->name('scan');
     Route::post('/scan', [KantinVendorController::class, 'scanProcess'])->name('scan.process');
+
+});
+Route::prefix('antrian')->name('antrian.')->group(function () {
+    Route::get('/guest', [AntrianController::class, 'guest'])->name('guest');
+    Route::post('/daftar', [AntrianController::class, 'daftar'])->name('daftar');
+    Route::get('/tiket/{id}', [AntrianController::class, 'tiket'])->name('tiket');
+    Route::get('/papan', [AntrianController::class, 'papan'])->name('papan');
+    Route::get('/stream', [AntrianController::class, 'stream'])
+        ->name('stream')
+        ->withoutMiddleware([
+            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+            \Illuminate\Session\Middleware\StartSession::class,
+            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+            \Illuminate\Cookie\Middleware\EncryptCookies::class,
+            \Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class,
+        ]);
 });
 
 // ROUTE DENGAN AUTH
@@ -142,4 +159,10 @@ Route::prefix('kunjungan-toko')->group(function () {
     Route::get('/get-toko/{barcode}', [KunjunganTokoController::class, 'getToko']);
     Route::post('/proses',        [KunjunganTokoController::class, 'prosesKunjungan'])->name('kunjungan.proses');
 });
+Route::prefix('antrian')->name('antrian.')->group(function () {
+        Route::get('/admin', [AntrianController::class, 'admin'])->name('admin');
+        Route::post('/panggil', [AntrianController::class, 'panggil'])->name('panggil');
+        Route::post('/terlambat', [AntrianController::class, 'terlambat'])->name('terlambat');
+        Route::post('/panggil-terlambat', [AntrianController::class, 'panggilTerlambat'])->name('panggil.terlambat');
+    });
 });
