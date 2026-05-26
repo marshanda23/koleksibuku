@@ -257,6 +257,15 @@ href="{{ route('select.index') }}">
     </div>
 </li>
 
+{{-- ABSENSI NFC --}}
+<li class="nav-item">
+    <a class="nav-link {{ request()->routeIs('absensi.*') ? 'active' : '' }}"
+       href="{{ route('absensi.index') }}">
+        <span class="menu-title">Absensi NFC</span>
+        <i class="mdi mdi-card-account-details menu-icon"></i>
+    </a>
+</li>
+
 {{-- SIGN OUT --}}
 <li class="nav-item">
 <a class="nav-link"

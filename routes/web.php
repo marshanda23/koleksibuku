@@ -16,6 +16,7 @@ use App\Http\Controllers\KantinQrController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\KunjunganTokoController;
 use App\Http\Controllers\AntrianController;
+use App\Http\Controllers\AbsensiController;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
@@ -29,6 +30,13 @@ Route::get('auth/google/callback', [LoginController::class, 'handleGoogleCallbac
 
 Route::get('otp-verification', [LoginController::class, 'otpView'])->name('otp.view');
 Route::post('otp-verification', [LoginController::class, 'verifyOtp'])->name('otp.verify');
+
+Route::get('/absensi', [AbsensiController::class, 'index'])->name('absensi.index');
+Route::post('/absensi/scan', [AbsensiController::class, 'scan'])->name('absensi.scan');
+Route::get('/absensi/mahasiswa', [AbsensiController::class, 'mahasiswa'])->name('absensi.mahasiswa');
+Route::post('/absensi/daftarkan-kartu', [AbsensiController::class, 'daftarkanKartu'])->name('absensi.daftarkan');
+Route::post('/absensi/mahasiswa/tambah', [AbsensiController::class, 'tambahMahasiswa'])->name('absensi.tambah');
+Route::delete('/absensi/mahasiswa/{id}', [AbsensiController::class, 'hapusMahasiswa'])->name('absensi.hapus');
 
 // KANTIN - CUSTOMER (tanpa login)
 Route::prefix('kantin')->name('kantin.')->group(function () {
